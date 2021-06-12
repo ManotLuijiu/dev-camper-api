@@ -20,5 +20,14 @@
   "bugs": {
     "url": "https://github.com/ManotLuijiu/dev-camper-api/issues"
   },
-  "homepage": "https://github.com/ManotLuijiu/dev-camper-api#readme"
+  "homepage": "https://github.com/ManotLuijiu/dev-camper-api#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "serve-favicon": "^2.5.0",
+    "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "dotenv": "^10.0.0",
+    "nodemon": "^2.0.7"
+  }
 }
