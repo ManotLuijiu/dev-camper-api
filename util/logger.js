@@ -67,7 +67,6 @@ const logger = winston.createLogger({
       db: process.env.MONGO_URI,
       options: {
         useUnifiedTopology: true,
-        useNewUrlParser: true,
       },
       // A collection to save json formatted logs
       collection: 'server_logs',

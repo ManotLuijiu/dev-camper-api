@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
-    "start": "node server.js"
+    "start": "NODE_ENV=production node server.js"
   },
   "repository": {
     "type": "git",
@@ -24,10 +24,14 @@
   },
   "homepage": "https://github.com/ManotLuijiu/dev-camper-api#readme",
   "dependencies": {
+    "cli-highlight": "^2.1.11",
     "express": "^4.17.1",
     "morgan": "^1.10.0",
+    "rotating-file-stream": "^2.1.5",
     "serve-favicon": "^2.5.0",
-    "winston": "^3.3.3"
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.5",
+    "winston-mongodb": "^5.0.7"
   },
   "devDependencies": {
     "dotenv": "^10.0.0",
