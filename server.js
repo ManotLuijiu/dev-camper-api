@@ -8,6 +8,7 @@ const morgan = require('morgan');
 const logger = require('./util/logger');
 const { stream } = logger;
 
+const bootcamps = require('./routes/bootcamps');
 const app = express();
 
 const accessLogStream = rfs.createStream('access.log', {
@@ -22,7 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Morgan
 morgan.token('th-date', function (req, res) {
-  const data = new Date();
+  const date = new Date();
   return date;
 });
 app.use(morgan('common', { stream: accessLogStream }));
@@ -33,32 +34,8 @@ app.use(
   )
 );
 
-// Routes
-app.get('/api/v1/bootcamps', (req, res, next) => {
-  res.status(200).json({ success: true, msg: 'Show all bootcamps' });
-});
-
-app.get('/api/v1/bootcamps/:id', (req, res, next) => {
-  res
-    .status(200)
-    .json({ success: true, msg: `Show bootcamp ${req.params.id}` });
-});
-
-app.post('/api/v1/bootcamps', (req, res, next) => {
-  res.status(200).json({ success: true, msg: 'Create new bootcamps' });
-});
-
-app.put('/api/v1/bootcamps/:id', (req, res, next) => {
-  res
-    .status(200)
-    .json({ success: true, msg: `Update bootcamp ${req.params.id}` });
-});
-
-app.delete('/api/v1/bootcamps/:id', (req, res, next) => {
-  res
-    .status(200)
-    .json({ success: true, msg: `Delete bootcamp ${req.params.id}` });
-});
+// Mount Routers
+app.use('/api/v1/bootcamps', bootcamps);
 
 const PORT = process.env.PORT || 5000;
 
