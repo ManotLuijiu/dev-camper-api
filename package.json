@@ -25,7 +25,10 @@
   "homepage": "https://github.com/ManotLuijiu/dev-camper-api#readme",
   "dependencies": {
     "cli-highlight": "^2.1.11",
+    "colors": "^1.4.0",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
+    "mongoose": "^5.12.13",
     "morgan": "^1.10.0",
     "rotating-file-stream": "^2.1.5",
     "serve-favicon": "^2.5.0",

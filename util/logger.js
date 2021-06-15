@@ -1,6 +1,7 @@
 const winston = require('winston');
 require('winston-daily-rotate-file');
 require('winston-mongodb');
+const colors = require('colors');
 const path = require('path');
 const PROJECT_ROOT = path.join(__dirname, '..');
 
@@ -10,6 +11,7 @@ const arrow = '\u276F\u276F\u25B6';
 const logConfig = {
   transports: [new winston.transports.Console()],
   format: winston.format.combine(
+    winston.format.colorize({ all: true }),
     winston.format.label({
       label: `Label🏷️`,
     }),
@@ -23,6 +25,20 @@ const logConfig = {
     )
   ),
 };
+
+// Try colorize
+let alignColorsAndTime = winston.format.combine(
+  winston.format.colorize({ all: true }),
+  winston.format.json(),
+  winston.format.label({ label: `🏷️ DevCampers` }),
+  winston.format.timestamp({
+    format: 'DD-MMM-YYYY HH:mm:ss',
+  }),
+  winston.format.printf(
+    (info) =>
+      ` ${info.label}  ${info.timestamp}  ${info.level} : ${info.message}`
+  )
+);
 
 const logger = winston.createLogger({
   // File transport
@@ -58,7 +74,12 @@ const logger = winston.createLogger({
     }),
 
     // Console Log
-    new winston.transports.Console(logConfig),
+    new winston.transports.Console({
+      format: winston.format.combine(
+        winston.format.colorize(),
+        alignColorsAndTime
+      ),
+    }),
 
     // MongoDB Transport
     new winston.transports.MongoDB({
@@ -120,18 +141,19 @@ function formatLogArguments(args) {
   if (stackInfo) {
     // get file path relative to project root
     // const calleeStr = '(' + stackInfo.relativePath + ':' + stackInfo.line + ')';
-    const calleeStr = `(${stackInfo.relativePath}:${stackInfo.line})${arrow}`;
+    const calleeStr = `(${stackInfo.relativePath}:${stackInfo.line})${arrow}`
+      .brightCyan;
     // console.log(calleeStr);
     const calleeStrHl = highlight(calleeStr);
     // console.log(calleeStrHl);
 
     if (typeof args[0] === 'string') {
-      console.log(calleeStrHl, args[0]);
+      console.log(calleeStr, args[0]);
       // args[0] = calleeStr + ' ' + args[0];
       args[0] = `log${arrow} ${args[0]}`;
     } else {
       const logging = highlight('Logging below\u2B07 ');
-      console.log(calleeStrHl, logging);
+      console.log(calleeStr, logging);
       console.log(JSON.stringify(args, null, 2));
       args.unshift(calleeStr);
     }
