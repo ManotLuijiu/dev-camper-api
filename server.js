@@ -12,8 +12,11 @@ const colors = require('colors');
 const errorHandler = require('./util/error');
 const logger = require('./util/logger');
 const { stream } = logger;
+colors.enable();
 
 const bootcamps = require('./routes/bootcamps');
+const courses = require('./routes/courses');
+
 const app = express();
 
 const accessLogStream = rfs.createStream('access.log', {
@@ -46,6 +49,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Mount Routers
 app.use('/api/v1/bootcamps', bootcamps);
+app.use('/api/v1/courses', courses);
 
 app.use(errorHandler);
 

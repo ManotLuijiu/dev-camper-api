@@ -12,10 +12,10 @@ const errorHandler = (err, req, res, next) => {
   console.log('Type: ', typeof err, '\n');
   console.groupEnd();
 
-  // console.group('Error Stack Group');
-  // console.log(err.stack.red);
-  // console.log('Type: ', typeof err.stack, '\n');
-  // console.groupEnd();
+  console.group('Error Stack Group');
+  console.log(err.stack.red);
+  console.log('Type: ', typeof err.stack, '\n');
+  console.groupEnd();
 
   // console.group('Error Errors');
   // console.log(err.errors);
@@ -55,6 +55,25 @@ const errorHandler = (err, req, res, next) => {
     // console.log(reason.split(':')[1]);
     // console.log(reason.split(':')[1].trim());
     const alignReason = reason.split(':')[1].trim();
+    // console.log(alignReason);
+
+    error = new ErrorResponse(message, 404, alignReason);
+  }
+
+  // Coding Error
+  if (err.name === 'ReferenceError') {
+    const data = err.stack.split('\n');
+    console.log(data);
+    const message = data[0];
+    const reason = data[1].trim();
+    console.log(reason);
+    console.log(reason.slice(reason.lastIndexOf('/') + 1, reason.indexOf(')')));
+    // console.log(reason.split(':')[1]);
+    // console.log(reason.split(':')[1].trim());
+    const alignReason = `Please check code at: ${reason.slice(
+      reason.lastIndexOf('/') + 1,
+      reason.indexOf(')')
+    )}`;
     // console.log(alignReason);
 
     error = new ErrorResponse(message, 404, alignReason);
