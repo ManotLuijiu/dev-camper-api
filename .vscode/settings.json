@@ -1,5 +1,19 @@
 {
   "editor.fontSize": 16,
   "terminal.integrated.fontSize": 16,
-  "window.zoomLevel": 0
+  "window.zoomLevel": 0,
+  "cSpell.ignoreWords": [
+    "api",
+    "devcamper",
+    "js",
+    "lib",
+    "manotlj",
+    "modules",
+    "mongoose",
+    "node",
+    "projects",
+    "sample",
+    "schematype",
+    "users"
+  ]
 }
