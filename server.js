@@ -1,11 +1,20 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
+const aws = require('aws-sdk');
 const favicon = require('serve-favicon');
 const path = require('path');
+const fileUpload = require('express-fileupload');
+const upload = require('./util/ImageUpload');
 const rfs = require('rotating-file-stream');
 const connectDB = require('./config/db');
 connectDB();
+
+aws.config.update({
+  secretAccessKey: process.env.S3_ACCESS_SECRET,
+  accessKeyId: process.env.S3_ACCESS_KEY,
+  region: process.env.S3_REGION,
+});
 
 const morgan = require('morgan');
 const colors = require('colors');
@@ -26,7 +35,7 @@ const accessLogStream = rfs.createStream('access.log', {
 
 app.use(cors());
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -47,9 +56,21 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
 }
 
+// File uploading support
+app.use(fileUpload());
+
 // Mount Routers
 app.use('/api/v1/bootcamps', bootcamps);
 app.use('/api/v1/courses', courses);
+// app.post(
+//   '/api/v1/bootcamps/:id/upload',
+//   upload.single('fileUpload'),
+//   function (req, res, next) {
+//     console.log(req.files.fileUpload.name);
+//     const filename = req.files.fileUpload.name;
+//     res.send(`Successfully uploaded ${filename}`);
+//   }
+// );
 
 app.use(errorHandler);
 

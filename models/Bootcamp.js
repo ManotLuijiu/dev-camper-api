@@ -80,6 +80,10 @@ const BootcampSchema = new mongoose.Schema(
       type: String,
       default: 'no-photo.jpg',
     },
+    profilePicture: {
+      type: String,
+      default: 'no-photo.jpg',
+    },
     housing: {
       type: Boolean,
       default: false,

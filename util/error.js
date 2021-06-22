@@ -1,5 +1,6 @@
 const ErrorResponse = require('./errorResponse');
 const logger = require('./logger');
+const _ = require('lodash');
 const colors = require('colors');
 colors.enable();
 
@@ -7,10 +8,10 @@ const errorHandler = (err, req, res, next) => {
   let error = { ...err };
   error.message = err.message;
   //   logger.error(err.stack.red);
-  console.group('Primitive Error');
+  // console.group('Primitive Error');
   console.log(err, '\n');
   console.log('Type: ', typeof err, '\n');
-  console.groupEnd();
+  // console.groupEnd();
 
   console.group('Error Stack Group');
   console.log(err.stack.red);
@@ -115,6 +116,19 @@ const errorHandler = (err, req, res, next) => {
     console.log(reason);
     console.log(typeof reason);
     error = new ErrorResponse(message, 400, reason);
+  }
+
+  // Mongoose syntax error
+  if (err.name === 'SyntaxError') {
+    const body = err.body;
+    const lastBody = body.substring(body.length - 3);
+    const regex = /,/g;
+    const found = lastBody.match(regex);
+    if (found[0] === ',') {
+      const message = `${err.message} => ${found[0]}`;
+      const reason = `Please delete comma at last line.`;
+      error = new ErrorResponse(message, 400, reason);
+    }
   }
 
   res.status(error.statusCode || 500).json({
