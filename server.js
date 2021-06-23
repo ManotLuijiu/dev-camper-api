@@ -5,6 +5,7 @@ const aws = require('aws-sdk');
 const favicon = require('serve-favicon');
 const path = require('path');
 const fileUpload = require('express-fileupload');
+const cookieParser = require('cookie-parser');
 const upload = require('./util/ImageUpload');
 const rfs = require('rotating-file-stream');
 const connectDB = require('./config/db');
@@ -25,6 +26,7 @@ colors.enable();
 
 const bootcamps = require('./routes/bootcamps');
 const courses = require('./routes/courses');
+const auth = require('./routes/auth');
 
 const app = express();
 
@@ -38,6 +40,8 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(cookieParser());
 
 // Morgan
 morgan.token('th-date', function (req, res) {
@@ -62,6 +66,7 @@ app.use(fileUpload());
 // Mount Routers
 app.use('/api/v1/bootcamps', bootcamps);
 app.use('/api/v1/courses', courses);
+app.use('/api/v1/auth', auth);
 // app.post(
 //   '/api/v1/bootcamps/:id/upload',
 //   upload.single('fileUpload'),

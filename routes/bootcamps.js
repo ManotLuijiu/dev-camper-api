@@ -12,6 +12,9 @@ const {
   profilePictureUpload,
 } = controllers;
 
+const Bootcamp = require('../models/Bootcamp');
+const advancedResults = require('../middleware/advancedResults');
+
 // const upload = require('../util/ImageUpload');
 // console.group('upload:');
 // console.log(upload);
@@ -41,7 +44,10 @@ router.route('/:id/upload').post(profilePictureUpload);
 //   }
 // );
 
-router.route('/').get(getBootcamps).post(createBootcamp);
+router
+  .route('/')
+  .get(advancedResults(Bootcamp, 'courses'), getBootcamps)
+  .post(createBootcamp);
 router
   .route('/:id')
   .get(getBootcamp)
