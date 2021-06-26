@@ -10,6 +10,8 @@ const errorHandler = (err, req, res, next) => {
   //   logger.error(err.stack.red);
   // console.group('Primitive Error');
   console.log(err, '\n');
+  console.log('Error Name: %s', err.name);
+  console.log('Error Value: %s', err.value);
   console.log('Type: ', typeof err, '\n');
   // console.groupEnd();
 
@@ -49,6 +51,23 @@ const errorHandler = (err, req, res, next) => {
   // console.log(testProps);
   // console.groupEnd();
 
+  // No user found response TypeError
+  if (err.name === 'TypeError' && err.value === undefined) {
+    const errValue = err.stack.split('\n')[0];
+    console.log('errValue %s', errValue);
+    const message = `${errValue}`;
+    // const idUndefined = errValue.match(/id/g)[0];
+    // console.log(idUndefined);
+    const reason1 = `Please check if you have protect or authorize at particular route`;
+    const reason2 = `Please register`;
+
+    if (errValue.match(/id/g)[0] === 'id') {
+      error = new ErrorResponse(message, 403, reason1);
+    } else {
+      error = new ErrorResponse(message, 403, reason2);
+    }
+  }
+
   // Mongoose bad ObjectId
   if (err.name === 'CastError') {
     const message = `Source not found with id of ${err.value}`;
@@ -81,29 +100,43 @@ const errorHandler = (err, req, res, next) => {
   }
 
   // Mongoose duplicate key { name: "TEST DATA" }
-  if (err.code === 11000) {
-    const message = `Duplicate field value entered`;
-    // console.log(err.stack);
-    // console.log('error stack type:', typeof err.stack);
-    const errStack = err.stack.split('\n')[0];
-    // console.log(errStack);
-    const errIndex = errStack.split('index: ')[1];
-    // console.log(errIndex);
-    const reason = errIndex.split('key: ')[1];
-    // console.log(reason);
-    const alignReason =
-      'Duplicating at field ' +
-      reason
-        .substring(reason.lastIndexOf('{') + 1, reason.lastIndexOf('}'))
-        .trim();
-    // console.log(alignReason);
-    const jsonKey = JSON.stringify(err.keyValue);
-    const alignKey = `Duplicating at field ${jsonKey}`;
-    console.log('   Key: Value');
-    console.log(err.keyValue);
-    console.log('Data Type:', typeof err.keyValue, '\n');
-    console.table(err.keyValue);
-    error = new ErrorResponse(message, 400, alignKey);
+  // console.log(err.keyPattern.bootcamp, err.keyPattern.user);
+  if (err.keyPattern) {
+    const reviewLimit =
+      err.keyPattern.bootcamp === 1 && err.keyPattern.user === 1;
+    console.log(reviewLimit);
+    if (err.code === 11000 && reviewLimit === true) {
+      const message = `Duplicate field value entered`;
+      // console.log(err.stack);
+      // console.log('error stack type:', typeof err.stack);
+      const errStack = err.stack.split('\n')[0];
+      // console.log(errStack);
+      const errIndex = errStack.split('index: ')[1];
+      // console.log(errIndex);
+      const reason = errIndex.split('key: ')[1];
+      // console.log(reason);
+      const alignReason =
+        'Duplicating at field ' +
+        reason
+          .substring(reason.lastIndexOf('{') + 1, reason.lastIndexOf('}'))
+          .trim();
+      // console.log(alignReason);
+      const jsonKey = JSON.stringify(err.keyValue);
+      const alignKey = `Duplicating at field ${jsonKey}`;
+      console.log('   Key: Value');
+      console.log(err.keyValue);
+      console.log('Data Type:', typeof err.keyValue, '\n');
+      console.table(err.keyValue);
+      console.table(err.keyPattern);
+
+      error = new ErrorResponse(
+        message,
+        400,
+        'You already add review for this bootcamp'
+      );
+    } else {
+      error = new ErrorResponse(message, 400, alignKey);
+    }
   }
 
   // Mongoose validation error
