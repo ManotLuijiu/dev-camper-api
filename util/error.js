@@ -58,7 +58,7 @@ const errorHandler = (err, req, res, next) => {
     const message = `${errValue}`;
     // const idUndefined = errValue.match(/id/g)[0];
     // console.log(idUndefined);
-    const reason1 = `Please check if you have protect or authorize at particular route`;
+    const reason1 = `Please check if you have protect or authorize at particular route \n or you did'n logged in`;
     const reason2 = `Please register`;
 
     if (errValue.match(/id/g)[0] === 'id') {

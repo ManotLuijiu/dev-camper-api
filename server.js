@@ -6,6 +6,9 @@ const favicon = require('serve-favicon');
 const path = require('path');
 const fileUpload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
+
+const mongoSanitize = require('express-mongo-sanitize');
+
 const upload = require('./util/ImageUpload');
 const rfs = require('rotating-file-stream');
 const connectDB = require('./config/db');
@@ -64,6 +67,9 @@ if (process.env.NODE_ENV !== 'production') {
 
 // File uploading support
 app.use(fileUpload());
+
+// Sanitize mongo database
+app.use(mongoSanitize());
 
 // Mount Routers
 app.use('/api/v1/bootcamps', bootcamps);
