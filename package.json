@@ -33,6 +33,9 @@
     "express": "^4.17.1",
     "express-fileupload": "^1.2.1",
     "express-mongo-sanitize": "^2.1.0",
+    "express-rate-limit": "^5.2.6",
+    "helmet": "^4.6.0",
+    "hpp": "^0.2.3",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "mongoose": "^5.12.13",
@@ -46,7 +49,8 @@
     "slugify": "^1.5.3",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5",
-    "winston-mongodb": "^5.0.7"
+    "winston-mongodb": "^5.0.7",
+    "xss-clean": "^0.1.1"
   },
   "devDependencies": {
     "dotenv": "^10.0.0",

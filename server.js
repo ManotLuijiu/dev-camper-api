@@ -7,7 +7,12 @@ const path = require('path');
 const fileUpload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
 
+// Securities
 const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
+const xss = require('xss-clean');
+const rateLimit = require('express-rate-limit');
+const hpp = require('hpp');
 
 const upload = require('./util/ImageUpload');
 const rfs = require('rotating-file-stream');
@@ -18,6 +23,11 @@ aws.config.update({
   secretAccessKey: process.env.S3_ACCESS_SECRET,
   accessKeyId: process.env.S3_ACCESS_KEY,
   region: process.env.S3_REGION,
+});
+
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 100,
 });
 
 const morgan = require('morgan');
@@ -70,6 +80,14 @@ app.use(fileUpload());
 
 // Sanitize mongo database
 app.use(mongoSanitize());
+// Secure HTTP Header
+app.use(helmet());
+// Prevent cross site scripting (xss)
+app.use(xss());
+// Rate Limiting (Limit repeat request)
+app.use(limiter);
+// Prevent HTTP Parameter Pollution attacks
+app.use(hpp());
 
 // Mount Routers
 app.use('/api/v1/bootcamps', bootcamps);
